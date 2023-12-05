@@ -18,7 +18,7 @@ HOSTNAME="${HOSTNAME:-localhost}"
 PG_USERNAME="${PG_USERNAME:-postgres}"
 BACKUP_DIR="${BACKUP_DIR%/}/"
 PG_OPTIONS="-h $HOSTNAME -U $PG_USERNAME"
-PGPASSWORD="$PG_PASSWORD"
+export PGPASSWORD="$PG_PASSWORD"
 
 ###########################
 #### START THE BACKUPS ####
@@ -44,12 +44,12 @@ function perform_backups() {
     echo -e "\n\nPerforming full backups"
     echo -e "--------------------------------------------\n"
 
-    for DATABASE in $(psql $PG_OPTIONS -t -c "$FULL_BACKUP_QUERY"); do
+    for DATABASE in $(psql $PG_OPTIONS -t -c "$FULL_BACKUP_QUERY" -d $SQL_DATABASE); do
         if [ "$DATABASE" == "$ROOT_DATABASE" ] || [ "$DATABASE" == "$SQL_DATABASE" ]; then
             if [ "$PG_ENABLE_PLAIN_BACKUPS" = "yes" ]; then
                 echo "Plain backup of $DATABASE"
 
-                if ! pg_dump $PG_OPTIONS -F c "$DATABASE" | gzip > "$FINAL_BACKUP_DIR$DATABASE.sql.gz.in_progress"; then
+                if ! pg_dump $PG_OPTIONS -F c -d "$DATABASE" | gzip > "$FINAL_BACKUP_DIR$DATABASE.sql.gz.in_progress"; then
                     echo "[!!ERROR!!] Failed to produce plain backup of database $DATABASE" >&2
                 else
                     mv "$FINAL_BACKUP_DIR$DATABASE.sql.gz.in_progress" "$FINAL_BACKUP_DIR$DATABASE.sql.gz"
@@ -59,7 +59,7 @@ function perform_backups() {
             if [ "$PG_ENABLE_CUSTOM_BACKUPS" = "yes" ]; then
                 echo "Custom backup of $DATABASE"
 
-                if ! pg_dump $PG_OPTIONS -F c "$DATABASE" | gzip > "$FINAL_BACKUP_DIR$DATABASE.custom.in_progress"; then
+                if ! pg_dump $PG_OPTIONS -F c -d "$DATABASE" | gzip > "$FINAL_BACKUP_DIR$DATABASE.custom.in_progress"; then
                     echo "[!!ERROR!!] Failed to produce custom backup of database $DATABASE" >&2
                 else
                     mv "$FINAL_BACKUP_DIR$DATABASE.custom.in_progress" "$FINAL_BACKUP_DIR$DATABASE.custom"
