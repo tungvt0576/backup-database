@@ -1,4 +1,4 @@
-docker run --env HOSTNAME=192.168.0.125:5432 \
+docker run --env HOSTNAME=192.168.0.125 \
     --env ROOT_DATABASE=mci \
     --env PG_USERNAME=dev \
     --env PG_PASSWORD=1 \

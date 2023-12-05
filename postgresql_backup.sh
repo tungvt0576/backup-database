@@ -18,6 +18,7 @@ HOSTNAME="${HOSTNAME:-localhost}"
 PG_USERNAME="${PG_USERNAME:-postgres}"
 BACKUP_DIR="${BACKUP_DIR%/}/"
 PG_OPTIONS="-h $HOSTNAME -U $PG_USERNAME"
+PGPASSWORD="$PG_PASSWORD"
 
 ###########################
 #### START THE BACKUPS ####
