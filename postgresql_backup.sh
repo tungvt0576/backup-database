@@ -104,3 +104,9 @@ fi
 find "$BACKUP_DIR" -maxdepth 1 -mtime +$PG_DAYS_TO_KEEP -name "*-daily" -exec rm -rf '{}' ';'
 
 perform_backups "-daily"
+
+
+# MINUTE BACKUPS
+
+MINUTE_OF_HOUR=$(date +%M)
+perform_backups "-$MINUTE_OF_HOUR"
