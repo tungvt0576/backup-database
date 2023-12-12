@@ -54,6 +54,8 @@ function perform_backups() {
                 if ! pg_dump $PG_OPTIONS -d "$DATABASE" -n "$SCHEMA" -f "$FINAL_BACKUP_DIR$DATABASE.sql.in_progress" ; then
                     echo "[!!ERROR!!] Failed to produce plain backup of database $DATABASE" >&2
                 else
+                    echo "$DATABASE backups complete."
+                    echo -e "-------------\n"
                     mv "$FINAL_BACKUP_DIR$DATABASE.sql.in_progress" "$FINAL_BACKUP_DIR$DATABASE.sql"
                 fi
             fi
