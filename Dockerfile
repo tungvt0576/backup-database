@@ -2,9 +2,11 @@ FROM alpine:latest
 
 ARG BACKUP_USER=root
 ENV HOSTNAME=pgsql
+ENV PORT=5432
 ENV PG_USERNAME=pgsql
 ENV PG_PASSWORD=secret
 ENV SQL_DATABASE=postgres
+ENV SCHEMA=public
 ENV BACKUP_DIR=/data
 ENV PG_ENABLE_CUSTOM_BACKUPS=no
 ENV PG_ENABLE_PLAIN_BACKUPS=yes
@@ -24,4 +26,4 @@ RUN echo "$CRON_EXPRESSION /usr/local/bin/postgresql_backup" > /var/spool/cron/c
 
 USER $BACKUP_USER
 
-CMD ["crond", "-l2", "-f"]
+CMD ["crond", "-l","8", "-f"]
