@@ -11,15 +11,16 @@ ENV PG_ENABLE_PLAIN_BACKUPS=yes
 ENV PG_DAY_OF_WEEK_TO_KEEP=5
 ENV PG_DAYS_TO_KEEP=7
 ENV PG_WEEKS_TO_KEEP=5
-ENV CRON_EXPRESSION="*/2 * * * *"
+ENV CRON_EXPRESSION="* * * * *"
 
 RUN apk add --update --no-cache postgresql-client
 
 VOLUME /data
 
 ADD postgresql_backup.sh /usr/local/bin/postgresql_backup
+RUN chmod +x /usr/local/bin/postgresql_backup
 
-RUN echo "$CRON_EXPRESSION postgresql_backup" > /var/spool/cron/crontabs/$BACKUP_USER
+RUN echo "$CRON_EXPRESSION /usr/local/bin/postgresql_backup" > /var/spool/cron/crontabs/$BACKUP_USER
 
 USER $BACKUP_USER
 
