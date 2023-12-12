@@ -22,7 +22,7 @@ VOLUME /data
 ADD postgresql_backup.sh /usr/local/bin/postgresql_backup
 RUN chmod +x /usr/local/bin/postgresql_backup
 
-RUN echo "$CRON_EXPRESSION /usr/local/bin/postgresql_backup" > /var/spool/cron/crontabs/$BACKUP_USER
+RUN echo "$CRON_EXPRESSION sh /usr/local/bin/postgresql_backup" > /var/spool/cron/crontabs/$BACKUP_USER
 
 USER $BACKUP_USER
 

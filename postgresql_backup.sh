@@ -47,7 +47,7 @@ function perform_backups() {
     echo -e "--------------------------------------------\n"
 
     for DATABASE in $(psql $PG_OPTIONS -t -c "$FULL_BACKUP_QUERY" -d $SQL_DATABASE); do
-        if [ "$DATABASE" == "$SQL_DATABASE" ]; then
+        if [ "$DATABASE" == "$ROOT_DATABASE" ]; then
             if [ "$PG_ENABLE_PLAIN_BACKUPS" = "yes" ]; then
                 echo "Plain backup of $DATABASE"
 
