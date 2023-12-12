@@ -38,7 +38,7 @@ function perform_backups() {
     fi
 
     ###########################
-    ##### DATABASE BACKUPS #####
+    ##### DATABASE BACKUPS ####
     ###########################
 
     FULL_BACKUP_QUERY="SELECT datname FROM pg_database WHERE datistemplate = false;"
@@ -105,12 +105,12 @@ fi
 # DAILY BACKUPS
 
 # Delete daily backups 7 days old or more
-# find "$BACKUP_DIR" -maxdepth 1 -mtime +$PG_DAYS_TO_KEEP -name "*-daily" -exec rm -rf '{}' ';'
+find "$BACKUP_DIR" -maxdepth 1 -mtime +$PG_DAYS_TO_KEEP -name "*-daily" -exec rm -rf '{}' ';'
 
-# perform_backups "-daily"
+perform_backups "-daily"
 
 
 # MINUTE BACKUPS
 
-MINUTE_OF_HOUR=$(date +%M)
-perform_backups "-$MINUTE_OF_HOUR"
+# MINUTE_OF_HOUR=$(date +%M)
+# perform_backups "-$MINUTE_OF_HOUR"
