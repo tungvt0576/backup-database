@@ -99,7 +99,6 @@ if [ "$DAY_OF_WEEK" -eq "$PG_DAY_OF_WEEK_TO_KEEP" ]; then
 
     perform_backups "-weekly"
 
-    exit 0
 fi
 
 # DAILY BACKUPS
@@ -108,6 +107,7 @@ fi
 find "$BACKUP_DIR" -maxdepth 1 -mtime +$PG_DAYS_TO_KEEP -name "*-daily" -exec rm -rf '{}' ';'
 
 perform_backups "-daily"
+exit 0
 
 
 # MINUTE BACKUPS
