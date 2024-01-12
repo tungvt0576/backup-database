@@ -45,28 +45,28 @@ function perform_backups() {
 
     echo -e "\n\nPerforming full backups"
     echo -e "--------------------------------------------\n"
-
+    export TIME_STAMPS=$(date +\%Y-\%m-\%d-\%H-\%M-\%S)
     for DATABASE in $(psql $PG_OPTIONS -t -c "$FULL_BACKUP_QUERY" -d $SQL_DATABASE); do
         if [ "$DATABASE" == "$ROOT_DATABASE" ]; then
             if [ "$PG_ENABLE_PLAIN_BACKUPS" = "yes" ]; then
                 echo "Plain backup of $DATABASE"
 
-                if ! pg_dump $PG_OPTIONS -d "$DATABASE" -n "$SCHEMA" -f "$FINAL_BACKUP_DIR$DATABASE$(date +\%Y-\%m-\%d-\%H).sql.in_progress" ; then
+                if ! pg_dump $PG_OPTIONS -d "$DATABASE" -n "$SCHEMA" -f "$FINAL_BACKUP_DIR$DATABASE$TIME_STAMPS.sql.in_progress" ; then
                     echo "[!!ERROR!!] Failed to produce plain backup of database $DATABASE" >&2
                 else
                     echo "$DATABASE backups complete."
                     echo -e "-------------\n"
-                    mv "$FINAL_BACKUP_DIR$DATABASE$(date +\%Y-\%m-\%d-\%H).sql.in_progress" "$FINAL_BACKUP_DIR$DATABASE$(date +\%Y-\%m-\%d-\%H).sql"
+                    mv "$FINAL_BACKUP_DIR$DATABASE$TIME_STAMPS.sql.in_progress" "$FINAL_BACKUP_DIR$DATABASE$TIME_STAMPS.sql"
                 fi
             fi
 
             if [ "$PG_ENABLE_CUSTOM_BACKUPS" = "yes" ]; then
                 echo "Custom backup of $DATABASE"
 
-                if ! pg_dump $PG_OPTIONS -F c -d "$DATABASE" | gzip > "$FINAL_BACKUP_DIR$DATABASE$(date +\%Y-\%m-\%d-\%H).custom.in_progress"; then
+                if ! pg_dump $PG_OPTIONS -F c -d "$DATABASE" | gzip > "$FINAL_BACKUP_DIR$DATABASE$TIME_STAMPS.custom.in_progress"; then
                     echo "[!!ERROR!!] Failed to produce custom backup of database $DATABASE" >&2
                 else
-                    mv "$FINAL_BACKUP_DIR$DATABASE$(date +\%Y-\%m-\%d-\%H).custom.in_progress" "$FINAL_BACKUP_DIR$DATABASE$(date +\%Y-\%m-\%d-\%H).custom"
+                    mv "$FINAL_BACKUP_DIR$DATABASE$TIME_STAMPS.custom.in_progress" "$FINAL_BACKUP_DIR$DATABASE$TIME_STAMPS.custom"
                 fi
             fi
         fi
@@ -90,16 +90,16 @@ fi
 
 # WEEKLY BACKUPS
 
-DAY_OF_WEEK=$(date +%u) # 1-7 (Monday-Sunday)
-EXPIRED_DAYS=$((($PG_WEEKS_TO_KEEP * 7) + 1))
+# DAY_OF_WEEK=$(date +%u) # 1-7 (Monday-Sunday)
+# EXPIRED_DAYS=$((($PG_WEEKS_TO_KEEP * 7) + 1))
 
-if [ "$DAY_OF_WEEK" -eq "$PG_DAY_OF_WEEK_TO_KEEP" ]; then
-    # Delete all expired weekly directories
-    find "$BACKUP_DIR" -maxdepth 1 -mtime +$EXPIRED_DAYS -name "*-weekly" -exec rm -rf '{}' ';'
+# if [ "$DAY_OF_WEEK" -eq "$PG_DAY_OF_WEEK_TO_KEEP" ]; then
+#     # Delete all expired weekly directories
+#     find "$BACKUP_DIR" -maxdepth 1 -mtime +$EXPIRED_DAYS -name "*-weekly" -exec rm -rf '{}' ';'
 
-    perform_backups "-weekly"
+#     perform_backups "-weekly"
 
-fi
+# fi
 
 # DAILY BACKUPS
 
