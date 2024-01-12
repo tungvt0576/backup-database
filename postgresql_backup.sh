@@ -85,7 +85,7 @@ if [ "$DAY_OF_MONTH" -eq 1 ]; then
 
     perform_backups "-monthly"
 
-    exit 0
+    # exit 0
 fi
 
 # WEEKLY BACKUPS
