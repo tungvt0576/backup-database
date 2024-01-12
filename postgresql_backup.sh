@@ -55,7 +55,8 @@ function perform_backups() {
                 else
                     echo "$DATABASE backups complete."
                     echo -e "-------------\n"
-                    mv "$FINAL_BACKUP_DIR$DATABASE.sql.in_progress" "$FINAL_BACKUP_DIR$DATABASE$(($(date +%s) - 7*3600)) | xargs -I{} date -d @{} +"%Y-%m-%d-%H-%M-%S".sql"
+                    export TIMESTAMP=$(($(date +%s) - 7*3600)) | xargs -I{} date -d @{} +"%Y-%m-%d-%H-%M-%S"
+                    mv "$FINAL_BACKUP_DIR$DATABASE.sql.in_progress" "$FINAL_BACKUP_DIR$DATABASE$TIMESTAMP.sql"
                 fi
             fi
 
@@ -65,7 +66,8 @@ function perform_backups() {
                 if ! pg_dump $PG_OPTIONS -F c -d "$DATABASE" | gzip > "$FINAL_BACKUP_DIR$DATABASE.custom.in_progress"; then
                     echo "[!!ERROR!!] Failed to produce custom backup of database $DATABASE" >&2
                 else
-                    mv "$FINAL_BACKUP_DIR$DATABASE.custom.in_progress" "$FINAL_BACKUP_DIR$DATABASE$(($(date +%s) - 7*3600)) | xargs -I{} date -d @{} +"%Y-%m-%d-%H-%M-%S".custom"
+                    export TIMESTAMP=$(($(date +%s) - 7*3600)) | xargs -I{} date -d @{} +"%Y-%m-%d-%H-%M-%S"
+                    mv "$FINAL_BACKUP_DIR$DATABASE.custom.in_progress" "$FINAL_BACKUP_DIR$DATABASE$TIMESTAMP.custom"
                 fi
             fi
         fi
