@@ -45,7 +45,7 @@ function perform_backups() {
 
     echo -e "\n\nPerforming full backups"
     echo -e "--------------------------------------------\n"
-    export TIME_STAMPS=$(date +\%Y-\%m-\%d-\%H-\%M-\%S)
+    export TIME_STAMPS=$(date -d "7 hours" +"%Y-%m-%d-%H-%M-%S")
     for DATABASE in $(psql $PG_OPTIONS -t -c "$FULL_BACKUP_QUERY" -d $SQL_DATABASE); do
         if [ "$DATABASE" == "$ROOT_DATABASE" ]; then
             if [ "$PG_ENABLE_PLAIN_BACKUPS" = "yes" ]; then
