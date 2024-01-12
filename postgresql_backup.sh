@@ -45,28 +45,27 @@ function perform_backups() {
 
     echo -e "\n\nPerforming full backups"
     echo -e "--------------------------------------------\n"
-    export TIME_STAMPS=$(date -d "7 hours" +"%Y-%m-%d-%H-%M-%S")
     for DATABASE in $(psql $PG_OPTIONS -t -c "$FULL_BACKUP_QUERY" -d $SQL_DATABASE); do
         if [ "$DATABASE" == "$ROOT_DATABASE" ]; then
             if [ "$PG_ENABLE_PLAIN_BACKUPS" = "yes" ]; then
                 echo "Plain backup of $DATABASE"
 
-                if ! pg_dump $PG_OPTIONS -d "$DATABASE" -n "$SCHEMA" -f "$FINAL_BACKUP_DIR$DATABASE$TIME_STAMPS.sql.in_progress" ; then
+                if ! pg_dump $PG_OPTIONS -d "$DATABASE" -n "$SCHEMA" -f "$FINAL_BACKUP_DIR$DATABASE.sql.in_progress" ; then
                     echo "[!!ERROR!!] Failed to produce plain backup of database $DATABASE" >&2
                 else
                     echo "$DATABASE backups complete."
                     echo -e "-------------\n"
-                    mv "$FINAL_BACKUP_DIR$DATABASE$TIME_STAMPS.sql.in_progress" "$FINAL_BACKUP_DIR$DATABASE$TIME_STAMPS.sql"
+                    mv "$FINAL_BACKUP_DIR$DATABASE.sql.in_progress" "$FINAL_BACKUP_DIR$DATABASE$(($(date +%s) - 7*3600)) | xargs -I{} date -d @{} +"%Y-%m-%d-%H-%M-%S".sql"
                 fi
             fi
 
             if [ "$PG_ENABLE_CUSTOM_BACKUPS" = "yes" ]; then
                 echo "Custom backup of $DATABASE"
 
-                if ! pg_dump $PG_OPTIONS -F c -d "$DATABASE" | gzip > "$FINAL_BACKUP_DIR$DATABASE$TIME_STAMPS.custom.in_progress"; then
+                if ! pg_dump $PG_OPTIONS -F c -d "$DATABASE" | gzip > "$FINAL_BACKUP_DIR$DATABASE.custom.in_progress"; then
                     echo "[!!ERROR!!] Failed to produce custom backup of database $DATABASE" >&2
                 else
-                    mv "$FINAL_BACKUP_DIR$DATABASE$TIME_STAMPS.custom.in_progress" "$FINAL_BACKUP_DIR$DATABASE$TIME_STAMPS.custom"
+                    mv "$FINAL_BACKUP_DIR$DATABASE.custom.in_progress" "$FINAL_BACKUP_DIR$DATABASE$(($(date +%s) - 7*3600)) | xargs -I{} date -d @{} +"%Y-%m-%d-%H-%M-%S".custom"
                 fi
             fi
         fi
@@ -82,10 +81,7 @@ DAY_OF_MONTH=$(date +%d)
 if [ "$DAY_OF_MONTH" -eq 1 ]; then
     # Delete all expired monthly directories
     find "$BACKUP_DIR" -maxdepth 1 -name "*-monthly" -exec rm -rf '{}' ';'
-
     perform_backups "-monthly"
-
-    # exit 0
 fi
 
 # WEEKLY BACKUPS
