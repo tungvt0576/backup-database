@@ -27,7 +27,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: tungvt200576/backup-database:1.0
+          tags: tungvt200576/backup-database
 
 
   # pull-and-up:
