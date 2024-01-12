@@ -1,3 +1,5 @@
+# RUN COMMAND
+```
 docker run -e HOSTNAME=192.168.0.125 \
            -e ROOT_DATABASE=mci \
            -e PG_USERNAME=dev \
@@ -7,3 +9,4 @@ docker run -e HOSTNAME=192.168.0.125 \
            -v /home/das/backup:/data \
            --name backup-database \
            -d tungvt200576/backup-database:1.0
+```
