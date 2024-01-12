@@ -51,22 +51,22 @@ function perform_backups() {
             if [ "$PG_ENABLE_PLAIN_BACKUPS" = "yes" ]; then
                 echo "Plain backup of $DATABASE"
 
-                if ! pg_dump $PG_OPTIONS -d "$DATABASE" -n "$SCHEMA" -f "$FINAL_BACKUP_DIR$DATABASE.sql.in_progress" ; then
+                if ! pg_dump $PG_OPTIONS -d "$DATABASE" -n "$SCHEMA" -f "$FINAL_BACKUP_DIR$DATABASE$(date +\%Y-\%m-\%d-\%H).sql.in_progress" ; then
                     echo "[!!ERROR!!] Failed to produce plain backup of database $DATABASE" >&2
                 else
                     echo "$DATABASE backups complete."
                     echo -e "-------------\n"
-                    mv "$FINAL_BACKUP_DIR$DATABASE.sql.in_progress" "$FINAL_BACKUP_DIR$DATABASE.sql"
+                    mv "$FINAL_BACKUP_DIR$DATABASE$(date +\%Y-\%m-\%d-\%H).sql.in_progress" "$FINAL_BACKUP_DIR$DATABASE$(date +\%Y-\%m-\%d-\%H).sql"
                 fi
             fi
 
             if [ "$PG_ENABLE_CUSTOM_BACKUPS" = "yes" ]; then
                 echo "Custom backup of $DATABASE"
 
-                if ! pg_dump $PG_OPTIONS -F c -d "$DATABASE" | gzip > "$FINAL_BACKUP_DIR$DATABASE.custom.in_progress"; then
+                if ! pg_dump $PG_OPTIONS -F c -d "$DATABASE" | gzip > "$FINAL_BACKUP_DIR$DATABASE$(date +\%Y-\%m-\%d-\%H).custom.in_progress"; then
                     echo "[!!ERROR!!] Failed to produce custom backup of database $DATABASE" >&2
                 else
-                    mv "$FINAL_BACKUP_DIR$DATABASE.custom.in_progress" "$FINAL_BACKUP_DIR$DATABASE.custom"
+                    mv "$FINAL_BACKUP_DIR$DATABASE$(date +\%Y-\%m-\%d-\%H).custom.in_progress" "$FINAL_BACKUP_DIR$DATABASE$(date +\%Y-\%m-\%d-\%H).custom"
                 fi
             fi
         fi
