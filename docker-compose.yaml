@@ -1,0 +1,15 @@
+version: '3'
+services:
+  backup-database:
+    image: tungvt200576/backup-database:1.0
+    container_name: backup-database
+    environment:
+      - HOSTNAME=192.168.0.125
+      - ROOT_DATABASE=mci
+      - PG_USERNAME=dev
+      - PG_PASSWORD=1
+      - CRON_EXPRESSION="0 * * * *"
+      - SCHEMA=mci-dev
+    volumes:
+      - /home/das/backup:/data
+    restart: always
