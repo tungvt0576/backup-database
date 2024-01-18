@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.14
 
 ARG BACKUP_USER=root
 ENV HOSTNAME=pgsql
@@ -14,9 +14,12 @@ ENV PG_DAY_OF_WEEK_TO_KEEP=5
 ENV PG_DAYS_TO_KEEP=7
 ENV PG_WEEKS_TO_KEEP=5
 ENV CRON_EXPRESSION="0 * * * *"
-ENV TZ="Asia/Ho_Chi_Minh"
 
 RUN apk add --update --no-cache postgresql-client
+RUN apk add --update --no-cache tzdata && \
+    ln -sf /usr/share/zoneinfo/Asia/Bangkok /etc/localtime && \
+    echo "Asia/Bangkok" > /etc/timezone
+
 
 VOLUME /data
 
