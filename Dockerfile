@@ -14,6 +14,7 @@ ENV PG_DAY_OF_WEEK_TO_KEEP=5
 ENV PG_DAYS_TO_KEEP=7
 ENV PG_WEEKS_TO_KEEP=5
 ENV CRON_EXPRESSION="0 * * * *"
+ENV TZ="Asia/Ho_Chi_Minh"
 
 RUN apk add --update --no-cache postgresql-client
 
