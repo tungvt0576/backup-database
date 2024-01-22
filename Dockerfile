@@ -1,4 +1,4 @@
-FROM alpine:3.14
+FROM alpine:3.19
 
 ARG BACKUP_USER=root
 ENV HOSTNAME=pgsql
