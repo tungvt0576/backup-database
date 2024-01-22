@@ -5,7 +5,7 @@ services:
     container_name: backup-database
     environment:
       - HOSTNAME=192.168.0.125
-      - ROOT_DATABASE=mci
+      - BACKUP_DATABASE=mci
       - PG_USERNAME=dev
       - PG_PASSWORD=1
       - CRON_EXPRESSION="0 * * * *"

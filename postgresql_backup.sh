@@ -17,6 +17,7 @@ fi
 HOSTNAME="${HOSTNAME:-localhost}"
 PG_USERNAME="${PG_USERNAME:-postgres}"
 BACKUP_DIR="${BACKUP_DIR%/}/"
+BACKUP_DATABASE="${BACKUP_DATABASE:-postgres}"
 PORT="${PORT:-5432}"
 SCHEMA="${SCHEMA:-public}"
 PG_OPTIONS="-h $HOSTNAME -p $PORT -U $PG_USERNAME"
@@ -46,8 +47,8 @@ function perform_backups() {
     echo -e "\n\nPerforming full backups"
     echo -e "--------------------------------------------\n"
     for DATABASE in $(psql $PG_OPTIONS -t -c "$FULL_BACKUP_QUERY" -d $SQL_DATABASE); do
-        if [ "$DATABASE" == "$ROOT_DATABASE" ]; then
-            if [ "$PG_ENABLE_PLAIN_BACKUPS" = "yes" ]; then
+        if [ "$DATABASE" == "$BACKUP_DATABASE" ]; then
+            if [ "$PG_ENABLE_PLAIN_BACKUPS" == "yes" ]; then
                 echo "Plain backup of $DATABASE"
 
                 if ! pg_dump $PG_OPTIONS -d "$DATABASE" -n "$SCHEMA" -f "$FINAL_BACKUP_DIR$DATABASE.sql.in_progress" ; then
