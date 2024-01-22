@@ -77,13 +77,13 @@ function perform_backups() {
 
 # MONTHLY BACKUPS
 
-DAY_OF_MONTH=$(date +%d)
+# DAY_OF_MONTH=$(date +%d)
 
-if [ "$DAY_OF_MONTH" -eq 1 ]; then
-    # Delete all expired monthly directories
-    find "$BACKUP_DIR" -maxdepth 1 -name "*-monthly" -exec rm -rf '{}' ';'
-    perform_backups "-monthly"
-fi
+# if [ "$DAY_OF_MONTH" -eq 1 ]; then
+#     # Delete all expired monthly directories
+#     find "$BACKUP_DIR" -maxdepth 1 -name "*-monthly" -exec rm -rf '{}' ';'
+#     # perform_backups "-monthly"
+# fi
 
 # WEEKLY BACKUPS
 
