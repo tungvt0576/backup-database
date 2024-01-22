@@ -1,7 +1,7 @@
 version: '3'
 services:
   backup-database:
-    image: tungvt200576/backup-database:1.0
+    image: tungvt200576/backup-database
     container_name: backup-database
     environment:
       - HOSTNAME=192.168.0.125
